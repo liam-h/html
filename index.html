@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>F*ckPaper</title>
+  </head>
+  <body>
+    <h1>F*ckpaper</h1>
+    <div id="loggedout">
+      <h2>Please log in</h2>
+      <form onsubmit="login(event)">
+        <input id="email" type="email" placeholder="john.doe@mailbox.org" />
+        <input id="pass" type="password" placeholder="Password" />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+    <div id="loggedin">
+      <h2>You are logged in as <span id="username"></span></h2>
+      <button onclick="logout(event)">Sign out</button>
+      <br />
+      <input id="file" type="file" onchange="showMetadata(event)" />
+      <form id="metadata" onsubmit="upload(event)">
+        <input id="title" required type="text" placeholder="Title" />
+        <input id="author" type="text" placeholder="Author" />
+        <input id="year" type="date" placeholder="Year" />
+        <input id="pages" type="number" placeholder="Pages" />
+        <button type="submit">Upload</button>
+      </form>
+      <ol id="books"></ol>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"
+      integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"
+      integrity="sha512-z8IYLHO8bTgFqj+yrPyIJnzBDf7DDhWwiEsk4sY+Oe6J2M+WQequeGS7qioI5vT6rXgVRb4K1UVQC5ER7MKzKQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script type="text/javascript" src="js/index.js"></script>
+  </body>
+</html>
