@@ -111,6 +111,17 @@ async function logout(e) {
   }
 }
 
+async function signup(e) {
+  e.preventDefault();
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("pass").value;
+  try {
+    const user = await auth.createUserWithEmailAndPassword(email, password);
+  } catch (error) {
+    alert(error.message);
+  }
+}
+
 async function upload(e) {
   e.preventDefault();
   const currentUser = auth.currentUser.uid;
@@ -187,6 +198,7 @@ function showMetadata(e) {
   fileReader.readAsArrayBuffer(file);
 }
 
+// Event listeners i.v.m. de sorteer opties
 document
   .getElementById("sortOptionList")
   .addEventListener("input", function (e) {
