@@ -22,6 +22,17 @@
       <button onclick="logout(event)">Sign out</button>
       <br />
       <input id="file" type="file" onchange="showMetadata(event)" />
+      <label for="sortOptions">Sort by:</label>
+      <input list="sortOptions" name="sortOptions" id="sortOptionList" />
+      <datalist id="sortOptions">
+        <option label="Title" value="title" />
+        <option label="Author" value="author" />
+        <option label="Year" value="year" />
+        <option label="Pages" value="pages" />
+      </datalist>
+      <input type="checkbox" id="asc" />
+      <label for="asc" id="ascLabel">Descending</label>
+
       <form id="metadata" onsubmit="upload(event)">
         <input id="title" required type="text" placeholder="Title" />
         <input id="author" type="text" placeholder="Author" />

@@ -18,11 +18,20 @@ const metadata = document.getElementById("metadata");
 const form = Array.from(metadata.children).slice(0, -1);
 metadata.style.display = "none";
 
+let orderBy;
+let ascending = true;
+
 async function getBooks() {
   const books = document.getElementById("books");
   const currentUser = auth.currentUser.uid;
   const queryRef = db.collection("userbook").where("uid", "==", currentUser);
-  const querySnapshot = await queryRef.get();
+
+  console.log(orderBy);
+  console.log(ascending);
+  const querySnapshot =
+    orderBy == null
+      ? await queryRef.get()
+      : await queryRef.orderBy(orderBy, ascending ? "asc" : "desc").get();
 
   if (querySnapshot.empty) {
     console.log("No files found for this user");
@@ -31,6 +40,7 @@ async function getBooks() {
   // hier wordt de metadata van de file opgehaald en de download url
   querySnapshot.forEach(async function callback(v, i) {
     const field = v.data();
+    console.log(field);
     const bookHash = field.hash;
     const url = await ref.child(bookHash).getDownloadURL();
 
@@ -166,6 +176,7 @@ function showMetadata(e) {
       pdfDoc.getPageCount(),
     ];
 
+    // Als er geen metadata is wordt er een lege string geplaatst en de placeholder tekst blijft staan
     pdfInfo.forEach(function callback(v, i) {
       form[i].value = v == null ? "" : v;
     });
@@ -175,3 +186,20 @@ function showMetadata(e) {
   //Step 3:Read the file as ArrayBuffer
   fileReader.readAsArrayBuffer(file);
 }
+
+document
+  .getElementById("sortOptionList")
+  .addEventListener("input", function (e) {
+    e.preventDefault();
+    orderBy = e.target.value;
+    getBooks();
+  });
+
+document.getElementById("asc").addEventListener("change", function (e) {
+  e.preventDefault();
+  ascending = e.target.checked;
+  document.getElementById("ascLabel").innerHTML = ascending
+    ? "Ascending"
+    : "Descending";
+  getBooks();
+});
