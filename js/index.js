@@ -25,6 +25,7 @@ const metadata = document.getElementById("metadata");
 const note = document.getElementById("note");
 const form = Array.from(metadata.children).slice(0, -1);
 const show = document.forms["show"].elements["radio"];
+const provider = new firebase.auth.GoogleAuthProvider();
 metadata.style.display = "none";
 note.style.display = "none";
 
@@ -214,6 +215,58 @@ async function deleteNote(e) {
 /* AUTHENTICATION
 - React: quasi hetzelfde
 */
+auth
+  .getRedirectResult()
+  .then((result) => {
+    if (result.credential) {
+      /** @type {firebase.auth.OAuthCredential} */
+      var credential = result.credential;
+
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = credential.accessToken;
+      // ...
+    }
+    // The signed-in user info.
+    var user = result.user;
+  })
+  .catch((error) => {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // The email of the user's account used.
+    var email = error.email;
+    // The firebase.auth.AuthCredential type that was used.
+    var credential = error.credential;
+    // ...
+  });
+
+function googleLogin(e) {
+  e.preventDefault();
+  auth
+    .signInWithPopup(provider)
+    .then((result) => {
+      /** @type {firebase.auth.OAuthCredential} */
+      var credential = result.credential;
+
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = credential.accessToken;
+      // The signed-in user info.
+      var user = result.user;
+
+      auth.signInWithRedirect(provider);
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });
+}
+
 auth.onAuthStateChanged(function (user) {
   const loggedIn = document.getElementById("loggedin");
   const notLoggedIn = document.getElementById("loggedout");
