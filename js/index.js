@@ -81,6 +81,8 @@ firebase
     }
   });
 
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
 /* Schakelt de offline modus aan om te kijken of de data uit de cache komt - Werkt
 (async () => {
   await db.disableNetwork(db);
