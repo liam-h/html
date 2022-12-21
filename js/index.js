@@ -198,18 +198,24 @@ async function deleteBook(e) {
   e.preventDefault();
   const currentUser = auth.currentUser.uid;
   // Sender heeft de hash van het boek als value
-  const hash = e.target.value;
-  await db
-    .collection("userbook")
-    .doc(currentUser + hash)
-    .delete();
+  confirm("Are you sure you want to delete this book?");
+  if (confirm) {
+    const hash = e.target.value;
+    await db
+      .collection("userbook")
+      .doc(currentUser + hash)
+      .delete();
+  }
 }
 
 async function deleteNote(e) {
   e.preventDefault();
   // Sender heeft de id van de note als value
-  const noteId = e.target.value;
-  await db.collection("notes").doc(noteId).delete();
+  confirm("Are you sure you want to delete this note?");
+  if (confirm) {
+    const noteId = e.target.value;
+    await db.collection("notes").doc(noteId).delete();
+  }
 }
 
 /* AUTHENTICATION
@@ -313,6 +319,18 @@ async function signup(e) {
     const user = await auth.createUserWithEmailAndPassword(email, password);
   } catch (error) {
     alert(error.message);
+  }
+}
+
+async function deleteAccount(e) {
+  e.preventDefault();
+  confirm("Are you sure you want to delete your account?");
+  if (confirm) {
+    try {
+      await auth.currentUser.delete();
+    } catch (error) {
+      alert(error.message);
+    }
   }
 }
 
