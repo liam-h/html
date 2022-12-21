@@ -25,13 +25,32 @@ let orderBy;
 let ascending = true;
 let showBooks = true;
 
+firebase
+  .firestore()
+  .enablePersistence(db)
+  .catch((err) => {
+    if (err.code == "failed-precondition") {
+      // Multiple tabs open, persistence can only be enabled
+      // in one tab at a a time.
+      // ...
+      alert(
+        "Multiple tabs open, persistence can only be enabled in one tab at a time."
+      );
+    } else if (err.code == "unimplemented") {
+      // The current browser does not support all of the
+      // features required to enable persistence
+      // ...
+      alert(
+        "The current browser does not support all of the features required to enable persistence"
+      );
+    }
+  });
+
 async function getBooks() {
   const books = document.getElementById("books");
   const currentUser = auth.currentUser.uid;
   const queryRef = db.collection("userbook").where("uid", "==", currentUser);
 
-  console.log(orderBy);
-  console.log(ascending);
   const querySnapshot =
     orderBy == null
       ? await queryRef.get()
@@ -41,6 +60,9 @@ async function getBooks() {
     console.log("No files found for this user");
     return;
   }
+
+  const source = querySnapshot.metadata.fromCache ? "local cache" : "server";
+  console.log("Data came from " + source);
   // hier wordt de metadata van de file opgehaald en de download url
   querySnapshot.forEach(async function callback(v) {
     const field = v.data();
