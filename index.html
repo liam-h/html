@@ -29,7 +29,12 @@
         <label for="showBooks">Books</label>
       </form>
       <br />
-      <input id="file" type="file" onchange="showMetadata(event)" />
+      <input
+        id="file"
+        type="file"
+        accept=".pdf"
+        onchange="showMetadata(event)"
+      />
       <br />
       <button id="newNote">New note</button>
       <label for="sortOptions">Sort by:</label>
@@ -49,6 +54,7 @@
         <input id="year" type="date" placeholder="Year" />
         <input id="pages" type="number" placeholder="Pages" />
         <button type="submit">Upload</button>
+        <button type="button" onclick="cancelUpload(event)">Cancel</button>
       </form>
       <form id="note" onsubmit="uploadNote(event)">
         <input id="noteName" required type="text" placeholder="Note name" />

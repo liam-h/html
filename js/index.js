@@ -333,3 +333,9 @@ function showMetadata(e) {
   //Step 3:Read the file as ArrayBuffer
   fileReader.readAsArrayBuffer(file);
 }
+
+function cancelUpload(e) {
+  e.preventDefault();
+  metadata.style.display = "none";
+  document.forms("metadata").reset();
+}
