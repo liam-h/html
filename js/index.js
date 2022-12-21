@@ -387,8 +387,10 @@ function showMetadata(e) {
   fileReader.readAsArrayBuffer(file);
 }
 
-function cancelUpload(e) {
+function cancel(e) {
   e.preventDefault();
-  metadata.style.display = "none";
-  document.forms["metadata"].reset();
+  formToReset = document.forms[e.target.value];
+  if (e.target.value == "metadata") document.getElementById("file").value = "";
+  formToReset.style.display = "none";
+  formToReset.reset();
 }

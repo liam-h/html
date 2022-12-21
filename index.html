@@ -55,7 +55,9 @@
         <input id="year" type="date" placeholder="Year" />
         <input id="pages" type="number" placeholder="Pages" />
         <button type="submit">Upload</button>
-        <button type="button" onclick="cancelUpload(event)">Cancel</button>
+        <button type="button" onclick="cancel(event)" value="metadata">
+          Cancel
+        </button>
       </form>
       <form id="note" onsubmit="uploadNote(event)">
         <input id="noteName" required type="text" placeholder="Note name" />
@@ -66,6 +68,9 @@
           placeholder="Note content"
         ></textarea>
         <button type="submit">Upload</button>
+        <button type="button" onclick="cancel(event)" value="note">
+          Cancel
+        </button>
       </form>
       <ol id="books"></ol>
       <ol id="notes"></ol>
