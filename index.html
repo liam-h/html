@@ -21,8 +21,17 @@
     <div id="loggedin">
       <h2>You are logged in as <span id="username"></span></h2>
       <button onclick="logout(event)">Sign out</button>
+
+      <form id="show">
+        <input type="radio" id="showNotes" name="radio" />
+        <label for="showNotes">Notes</label>
+        <input type="radio" id="showBooks" name="radio" checked />
+        <label for="showBooks">Books</label>
+      </form>
       <br />
       <input id="file" type="file" onchange="showMetadata(event)" />
+      <br />
+      <button id="newNote">New note</button>
       <label for="sortOptions">Sort by:</label>
       <input list="sortOptions" name="sortOptions" id="sortOptionList" />
       <datalist id="sortOptions">
@@ -41,7 +50,18 @@
         <input id="pages" type="number" placeholder="Pages" />
         <button type="submit">Upload</button>
       </form>
+      <form id="note" onsubmit="uploadNote(event)">
+        <input id="noteName" required type="text" placeholder="Note name" />
+        <br />
+        <textarea
+          id="noteContent"
+          required
+          placeholder="Note content"
+        ></textarea>
+        <button type="submit">Upload</button>
+      </form>
       <ol id="books"></ol>
+      <ol id="notes"></ol>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>

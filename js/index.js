@@ -15,11 +15,15 @@ const storage = firebase.storage();
 const ref = firebase.storage().ref();
 const PDFDoc = PDFLib.PDFDocument;
 const metadata = document.getElementById("metadata");
+const note = document.getElementById("note");
 const form = Array.from(metadata.children).slice(0, -1);
+const show = document.forms["show"].elements["radio"];
 metadata.style.display = "none";
+note.style.display = "none";
 
 let orderBy;
 let ascending = true;
+let showBooks = true;
 
 async function getBooks() {
   const books = document.getElementById("books");
@@ -38,7 +42,7 @@ async function getBooks() {
     return;
   }
   // hier wordt de metadata van de file opgehaald en de download url
-  querySnapshot.forEach(async function callback(v, i) {
+  querySnapshot.forEach(async function callback(v) {
     const field = v.data();
     console.log(field);
     const bookHash = field.hash;
@@ -46,32 +50,67 @@ async function getBooks() {
 
     books.innerHTML += `
     <li>
-    <ul id="book${i}">
+    <ul>
     <li>Title: ${field.title}</li>
     <li>Author: ${field.author}</li>
     <li>Year: ${field.year}</li>
     <li>Pages: ${field.pages}</li>
     <li>Hash: ${bookHash}</li>
     <li><a href="${url}">Download</a></li>
-    <li><button id="delete${i}"
+    <li><button
     value="${bookHash}"
-    onclick="deleteBook(event, ${i})"
+    onclick="deleteBook(event)"
     >Delete</button></li>
     </ul>
     </li>`;
   });
 }
 
-async function deleteBook(e, id) {
+async function getNotes() {
+  const notes = document.getElementById("notes");
+
+  const currentUser = auth.currentUser.uid;
+  const queryRef = db.collection("notes").where("uid", "==", currentUser);
+  const querySnapshot = await queryRef.get();
+
+  if (querySnapshot.empty) {
+    console.log("No notes found for this user");
+    return;
+  }
+
+  querySnapshot.forEach(async function callback(v, i) {
+    const field = v.data();
+    console.log(field);
+    notes.innerHTML += `
+    <li>
+    <ul>
+    <li><h3>${field.name}</h3></li>
+    <li>${field.content}</li>
+    <li><button value="${v.id}" onclick="deleteNote(event)">Delete</button></li>
+    </ul>
+    </li>`;
+  });
+}
+
+async function deleteBook(e) {
   e.preventDefault();
   const currentUser = auth.currentUser.uid;
-  const hash = document.getElementById("delete" + id).value;
+  // const hash = document.getElementById("delete" + id).value;
+  const hash = e.target.value;
   console.log(currentUser + hash);
   console.log("function deleteBook called");
   await db
     .collection("userbook")
     .doc(currentUser + hash)
     .delete();
+}
+
+async function deleteNote(e) {
+  e.preventDefault();
+  const noteId = e.target.value;
+  console.log(noteId);
+  console.log("function deleteNote called");
+  await db.collection("notes").doc(noteId).delete();
 }
 
 auth.onAuthStateChanged(function (user) {
@@ -83,6 +122,7 @@ auth.onAuthStateChanged(function (user) {
     notLoggedIn.style.display = "none";
     username.innerHTML = user.email;
     getBooks();
+    getNotes();
   } else {
     notLoggedIn.style.display = "block";
     loggedIn.style.display = "none";
@@ -165,6 +205,20 @@ async function upload(e) {
   reader.readAsBinaryString(file);
 }
 
+async function uploadNote(e) {
+  e.preventDefault();
+  const currentUser = auth.currentUser.uid;
+  const noteName = document.getElementById("noteName").value;
+  const noteContent = document.getElementById("noteContent").value;
+  const data = {
+    uid: currentUser,
+    name: noteName,
+    content: noteContent,
+  };
+  await db.collection("notes").add(data);
+  alert("Note added");
+}
+
 function showMetadata(e) {
   e.preventDefault();
   metadata.style.display = "block";
@@ -207,6 +261,12 @@ document
     getBooks();
   });
 
+document.getElementById("newNote").addEventListener("click", function (e) {
+  e.preventDefault();
+  console.log("new note clicked");
+  note.style.display = note.style.display == "block" ? "none" : "block";
+});
+
 document.getElementById("asc").addEventListener("change", function (e) {
   e.preventDefault();
   ascending = e.target.checked;
@@ -215,3 +275,15 @@ document.getElementById("asc").addEventListener("change", function (e) {
     : "Descending";
   getBooks();
 });
+
+for (radio in show) {
+  show[radio].onclick = function () {
+    if (this.id == "showBooks") {
+      books.style.display = "block";
+      notes.style.display = "none";
+    } else {
+      books.style.display = "none";
+      notes.style.display = "block";
+    }
+  };
+}
