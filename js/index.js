@@ -337,5 +337,5 @@ function showMetadata(e) {
 function cancelUpload(e) {
   e.preventDefault();
   metadata.style.display = "none";
-  document.forms("metadata").reset();
+  document.forms["metadata"].reset();
 }
