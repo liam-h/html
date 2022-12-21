@@ -46,6 +46,11 @@ firebase
     }
   });
 
+/* Schakelt de offline modus aan om te kijken of de data uit de cache komt - Werkt
+(async () => {
+  await db.disableNetwork(db);
+})();*/
+
 async function getBooks() {
   const books = document.getElementById("books");
   const currentUser = auth.currentUser.uid;
