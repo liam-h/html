@@ -9,7 +9,7 @@ if ("serviceWorker" in navigator) {
 
       // Use ES Module version of our Service Worker in development
       // In production, use the normal service worker registration
-      reg = await navigator.serviceWorker.register("/service-worker.js", {
+      reg = await navigator.serviceWorker.register("js/service-worker.js", {
         type: "module",
       });
       //reg = await navigator.serviceWorker.register("/service-worker.js");
@@ -126,6 +126,7 @@ async function getBooks() {
     <li>Pages: ${field.pages}</li>
     <li>Hash: ${bookHash}</li>
     <li><a href="${url}">Download</a></li>
+    <li><iframe src="${url}" width="100%" height="100%"></iframe></li>
     <li><button
     value="${bookHash}"
     onclick="deleteBook(event)"
