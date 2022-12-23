@@ -36,27 +36,42 @@
         <label for="showBooks">Books</label>
       </form>
       <br />
-      <label for="file">Upload a book:</label>
-      <br />
-      <input
-        id="file"
-        type="file"
-        accept=".pdf"
-        onchange="showMetadata(event)"
-      />
+      <div id="bookUploadDiv">
+        <label for="file">Upload a book:</label>
+        <br />
+        <input
+          id="file"
+          type="file"
+          accept=".pdf"
+          onchange="showMetadata(event)"
+        />
+        <div>
+          <label for="dragAndDrop">Or drag and drop a book here:</label>
+          <br />
+          <div
+            id="dragAndDrop"
+            ondrop="drop(event)"
+            ondragover="allowDrop(event)"
+          >
+            <p>Only <b>PDFs</b> are allowed.</p>
+          </div>
+        </div>
+      </div>
       <br />
       <button id="newNote">New note</button>
-      <label for="sortOptionList">Sort by:</label>
-      <input list="sortOptions" name="sortOptions" id="sortOptionList" />
-      <datalist id="sortOptions">
-        <label for="sortOptions">The options to sort by:</label>
-        <option label="Title" value="title" selected />
-        <option label="Author" value="author" />
-        <option label="Year" value="year" />
-        <option label="Pages" value="pages" />
-      </datalist>
-      <input type="checkbox" id="asc" checked />
-      <label for="asc" id="ascLabel">Ascending</label>
+      <div id="sorting">
+        <label for="sortOptionList">Sort by:</label>
+        <input list="sortOptions" name="sortOptions" id="sortOptionList" />
+        <datalist id="sortOptions">
+          <label for="sortOptions">The options to sort by:</label>
+          <option label="Title" value="title" selected />
+          <option label="Author" value="author" />
+          <option label="Year" value="year" />
+          <option label="Pages" value="pages" />
+        </datalist>
+        <input type="checkbox" id="asc" checked />
+        <label for="asc" id="ascLabel">Ascending</label>
+      </div>
 
       <form id="metadata" onsubmit="upload(event)">
         <input id="title" required type="text" placeholder="Title" />

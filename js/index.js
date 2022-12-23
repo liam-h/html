@@ -52,6 +52,7 @@ const provider = new firebase.auth.GoogleAuthProvider();
 metadata.style.display = "none";
 note.style.display = "none";
 
+let file;
 let orderBy;
 let ascending = true;
 let showBooks = true;
@@ -167,7 +168,7 @@ async function upload(e) {
   e.preventDefault();
   const currentUser = auth.currentUser.uid;
   // dit is de file die je upload
-  const file = document.getElementById("file").files[0];
+  file = document.getElementById("file").files[0];
 
   // hier wordt de file omgezet naar een string om de hash te berekenen
   var reader = new FileReader();
@@ -190,6 +191,8 @@ async function upload(e) {
     }
 
     // hier wordt de hash en de uid van de gebruiker opgeslagen in de database
+    [title, author, year, pages] = form.elements;
+    console.log(title, author, year, pages);
     const data = {
       uid: currentUser,
       hash: hash,
@@ -391,9 +394,15 @@ for (radio in show) {
     if (this.id == "showBooks") {
       books.style.display = "block";
       notes.style.display = "none";
+      document.getElementById("bookUploadDiv").style.display = "block";
+      document.getElementById("sorting").style.display = "block";
+      document.getElementById("newNote").style.display = "none";
     } else {
       books.style.display = "none";
       notes.style.display = "block";
+      document.getElementById("bookUploadDiv").style.display = "none";
+      document.getElementById("sorting").style.display = "none";
+      document.getElementById("newNote").style.display = "block";
     }
   };
 }
@@ -402,7 +411,7 @@ function showMetadata(e) {
   e.preventDefault();
   metadata.style.display = "block";
 
-  const file = document.getElementById("file").files[0];
+  file = document.getElementById("file").files[0];
 
   //Step 2: Read the file using file reader
   var fileReader = new FileReader();
@@ -431,8 +440,20 @@ function showMetadata(e) {
   fileReader.readAsArrayBuffer(file);
 }
 
+function drop(e) {
+  e.preventDefault();
+  file = e.dataTransfer.files[0];
+  document.getElementById("file").files = e.dataTransfer.files;
+  showMetadata(e);
+}
+
+function allowDrop(e) {
+  e.preventDefault();
+}
+
 function cancel(e) {
   e.preventDefault();
+  file = null;
   formToReset = document.forms[e.target.value];
   if (e.target.value == "metadata") document.getElementById("file").value = "";
   formToReset.style.display = "none";
