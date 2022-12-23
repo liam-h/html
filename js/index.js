@@ -112,13 +112,16 @@ async function getBooks() {
   const source = querySnapshot.metadata.fromCache ? "local cache" : "server";
   console.log("Data came from " + source);
   // Hier wordt de metadata van de file opgehaald en de download url
+  books.innerHTML = "";
   querySnapshot.forEach(async function callback(v) {
     const field = v.data();
     console.log(field);
     const bookHash = field.hash;
-    const url = await ref.child(bookHash).getDownloadURL();
-
-    books.innerHTML += `
+    await ref
+      .child(bookHash)
+      .getDownloadURL()
+      .then((url) => {
+        books.innerHTML += `
     <li>
     <ul>
     <li>Title: ${field.title}</li>
@@ -134,6 +137,7 @@ async function getBooks() {
     >Delete</button></li>
     </ul>
     </li>`;
+      });
   });
 }
 
