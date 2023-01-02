@@ -1,3 +1,26 @@
+// Register the service worker
+if ("serviceWorker" in navigator) {
+  // Wait for the 'load' event to not block other work
+  window.addEventListener("load", async () => {
+    // Try to register the service worker.
+    try {
+      // Capture the registration for later use, if needed
+      let reg;
+
+      // Use ES Module version of our Service Worker in development
+      // In production, use the normal service worker registration
+      reg = await navigator.serviceWorker.register("js/service-worker.js", {
+        type: "module",
+      });
+      //reg = await navigator.serviceWorker.register("/service-worker.js");
+
+      console.log("Service worker registered! 😎", reg);
+    } catch (err) {
+      console.log("😥 Service worker registration failed: ", err);
+    }
+  });
+}
+
 /* FIREBASE CONFIG
 - React: aparte file
 */
@@ -29,6 +52,7 @@ const provider = new firebase.auth.GoogleAuthProvider();
 metadata.style.display = "none";
 note.style.display = "none";
 
+let file;
 let orderBy;
 let ascending = true;
 let showBooks = true;
@@ -58,6 +82,8 @@ firebase
     }
   });
 
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
 /* Schakelt de offline modus aan om te kijken of de data uit de cache komt - Werkt
 (async () => {
   await db.disableNetwork(db);
@@ -86,13 +112,16 @@ async function getBooks() {
   const source = querySnapshot.metadata.fromCache ? "local cache" : "server";
   console.log("Data came from " + source);
   // Hier wordt de metadata van de file opgehaald en de download url
+  books.innerHTML = "";
   querySnapshot.forEach(async function callback(v) {
     const field = v.data();
     console.log(field);
     const bookHash = field.hash;
-    const url = await ref.child(bookHash).getDownloadURL();
-
-    books.innerHTML += `
+    await ref
+      .child(bookHash)
+      .getDownloadURL()
+      .then((url) => {
+        books.innerHTML += `
     <li>
     <ul>
     <li>Title: ${field.title}</li>
@@ -101,12 +130,14 @@ async function getBooks() {
     <li>Pages: ${field.pages}</li>
     <li>Hash: ${bookHash}</li>
     <li><a href="${url}">Download</a></li>
+    <li><iframe src="${url}" width="100%" height="100%"></iframe></li>
     <li><button
     value="${bookHash}"
     onclick="deleteBook(event)"
     >Delete</button></li>
     </ul>
     </li>`;
+      });
   });
 }
 
@@ -141,7 +172,7 @@ async function upload(e) {
   e.preventDefault();
   const currentUser = auth.currentUser.uid;
   // dit is de file die je upload
-  const file = document.getElementById("file").files[0];
+  file = document.getElementById("file").files[0];
 
   // hier wordt de file omgezet naar een string om de hash te berekenen
   var reader = new FileReader();
@@ -164,6 +195,8 @@ async function upload(e) {
     }
 
     // hier wordt de hash en de uid van de gebruiker opgeslagen in de database
+    [title, author, year, pages] = form.elements;
+    console.log(title, author, year, pages);
     const data = {
       uid: currentUser,
       hash: hash,
@@ -365,9 +398,15 @@ for (radio in show) {
     if (this.id == "showBooks") {
       books.style.display = "block";
       notes.style.display = "none";
+      document.getElementById("bookUploadDiv").style.display = "block";
+      document.getElementById("sorting").style.display = "block";
+      document.getElementById("newNote").style.display = "none";
     } else {
       books.style.display = "none";
       notes.style.display = "block";
+      document.getElementById("bookUploadDiv").style.display = "none";
+      document.getElementById("sorting").style.display = "none";
+      document.getElementById("newNote").style.display = "block";
     }
   };
 }
@@ -376,7 +415,7 @@ function showMetadata(e) {
   e.preventDefault();
   metadata.style.display = "block";
 
-  const file = document.getElementById("file").files[0];
+  file = document.getElementById("file").files[0];
 
   //Step 2: Read the file using file reader
   var fileReader = new FileReader();
@@ -405,8 +444,20 @@ function showMetadata(e) {
   fileReader.readAsArrayBuffer(file);
 }
 
+function drop(e) {
+  e.preventDefault();
+  file = e.dataTransfer.files[0];
+  document.getElementById("file").files = e.dataTransfer.files;
+  showMetadata(e);
+}
+
+function allowDrop(e) {
+  e.preventDefault();
+}
+
 function cancel(e) {
   e.preventDefault();
+  file = null;
   formToReset = document.forms[e.target.value];
   if (e.target.value == "metadata") document.getElementById("file").value = "";
   formToReset.style.display = "none";
