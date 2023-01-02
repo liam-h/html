@@ -141,6 +141,15 @@ async function getBooks() {
   });
 }
 
+function readFile(e) {
+  e.preventDefault();
+  file = e.target.files[0];
+  const reader = new FileReader();
+  console.log(reader.result);
+  console.log(reader.readAsText(file));
+  console.log(file);
+}
+
 async function getNotes() {
   const notes = document.getElementById("notes");
 
@@ -156,6 +165,7 @@ async function getNotes() {
   querySnapshot.forEach(async function callback(v, i) {
     const field = v.data();
     console.log(field);
+    console.log(v.id);
     notes.innerHTML += `
     <li>
     <ul>

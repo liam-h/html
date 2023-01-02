@@ -86,11 +86,15 @@
       <form id="note" onsubmit="uploadNote(event)">
         <input id="noteName" required type="text" placeholder="Note name" />
         <br />
-        <textarea
-          id="noteContent"
-          required
-          placeholder="Note content"
-        ></textarea>
+        <textarea id="noteContent" placeholder="Note content"></textarea>
+        <br />
+        <label for="noteFile">Upload a text file</label>
+        <input
+          id="noteFile"
+          type="file"
+          accept=".txt"
+          onchange="readFile(event)"
+        />
         <button type="submit">Upload</button>
         <button type="button" onclick="cancel(event)" value="note">
           Cancel
