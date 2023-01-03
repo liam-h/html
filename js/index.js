@@ -145,8 +145,10 @@ function readFile(e) {
   e.preventDefault();
   file = e.target.files[0];
   const reader = new FileReader();
-  console.log(reader.result);
-  console.log(reader.readAsText(file));
+  reader.onloadend = function (e) {
+    console.log(reader.result);
+  };
+  reader.readAsText(file);
   console.log(file);
 }
 
