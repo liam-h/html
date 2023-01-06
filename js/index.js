@@ -148,7 +148,7 @@ function readFile(e) {
   if (file.type == "image/png" || file.type == "image/jpeg") ocr(e, file);
   const reader = new FileReader();
   reader.onloadend = function (e) {
-    console.log(reader.result);
+    document.getElementById("noteContent").innerHTML = reader.result;
   };
   reader.readAsText(file);
   console.log(file);
