@@ -144,6 +144,8 @@ async function getBooks() {
 function readFile(e) {
   e.preventDefault();
   file = e.target.files[0];
+  // Check if file is txt or image
+  if (file.type == "image/png" || file.type == "image/jpeg") ocr(e, file);
   const reader = new FileReader();
   reader.onloadend = function (e) {
     console.log(reader.result);
@@ -474,4 +476,15 @@ function cancel(e) {
   if (e.target.value == "metadata") document.getElementById("file").value = "";
   formToReset.style.display = "none";
   formToReset.reset();
+}
+
+function ocr(e, file) {
+  e.preventDefault();
+  console.log("ocr clicked");
+  Tesseract.recognize(e.target.files[0], "eng", {
+    logger: (m) => console.log(m),
+  }).then(({ data: { text } }) => {
+    document.getElementById("noteName").value = "OCR note";
+    document.getElementById("noteContent").value = text;
+  });
 }
