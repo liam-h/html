@@ -327,6 +327,7 @@ auth.onAuthStateChanged(function (user) {
   if (user) {
     loggedIn.style.display = "block";
     notLoggedIn.style.display = "none";
+    document.getElementById("changePassBtn").style = user.providerData[0].providerId == "password" ? "display: block" : "display: none" ;
     username.innerHTML = user.email;
     getBooks();
     getNotes();
@@ -379,6 +380,30 @@ async function deleteAccount(e) {
       alert(error.message);
     }
   }
+}
+
+async function changePassword(e) {
+  e.preventDefault();
+  const oldPassPrompt = prompt("Enter your current password");
+  if (oldPassPrompt) {
+    try {
+      const user = await auth.signInWithEmailAndPassword(
+        auth.currentUser.email,
+        oldPassPrompt
+      ).then(async () => {
+        const newPassPrompt = prompt("Enter your new password");
+        if (newPassPrompt) {
+          try {
+            await auth.currentUser.updatePassword(newPassPrompt);
+          } catch (error) {
+            alert(error.message);
+          }
+        };
+      });
+    } catch (error) {
+    alert(error.message);
+  }
+}
 }
 
 /* DOM MANIPULATION
