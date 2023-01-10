@@ -370,8 +370,7 @@ async function signup(e) {
 
 async function deleteAccount(e) {
   e.preventDefault();
-  confirm("Are you sure you want to delete your account?");
-  if (confirm) {
+  if (confirm("Are you sure you want to delete your account?")) {
     try {
       await auth.currentUser.delete();
     } catch (error) {
