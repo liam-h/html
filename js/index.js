@@ -245,8 +245,7 @@ async function deleteBook(e) {
   e.preventDefault();
   const currentUser = auth.currentUser.uid;
   // Sender heeft de hash van het boek als value
-  confirm("Are you sure you want to delete this book?");
-  if (confirm) {
+  if (confirm("Are you sure you want to delete this book?")) {
     const hash = e.target.value;
     await db
       .collection("userbook")
@@ -258,8 +257,7 @@ async function deleteBook(e) {
 async function deleteNote(e) {
   e.preventDefault();
   // Sender heeft de id van de note als value
-  confirm("Are you sure you want to delete this note?");
-  if (confirm) {
+  if (confirm("Are you sure you want to delete this note?")) {
     const noteId = e.target.value;
     await db.collection("notes").doc(noteId).delete();
   }
